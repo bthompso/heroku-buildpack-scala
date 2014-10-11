@@ -123,6 +123,10 @@ if [ ! -d "$SBT_USER_HOME/.ivy2" ]; then
 fi
 
 # build app
+mkdir -p $CACHE_DIR/.gems
+gem install -i $CACHE_DIR/.gems --no-rdoc compass
+export PATH=$PATH:$CACHE_DIR/.gems/bin
+export GEM_PATH=$GEM_PATH:$CACHE_DIR/.gems
 run_sbt "$SBT_USER_HOME_ABSOLUTE" "$SBT_BINDIR/$SBT_JAR" "$SBT_TASKS"
 
 PROFILE_PATH="$BUILD_DIR/.profile.d/scala.sh"
@@ -130,10 +134,6 @@ mkdir -p $(dirname $PROFILE_PATH)
 echo 'export PATH="/app/.jdk/bin:$PATH"' >> $PROFILE_PATH
 
 # repack cache
-mkdir -p $CACHE_DIR/.gems
-gem install -i $CACHE_DIR/.gems --no-rdoc compass
-export PATH=$PATH:$CACHE_DIR/.gems/bin
-export GEM_PATH=$GEM_PATH:$CACHE_DIR/.gems
 for DIR in $CACHED_DIRS; do
   cache_copy $DIR $BUILD_DIR $CACHE_DIR
 done
